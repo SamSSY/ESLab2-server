@@ -2,12 +2,10 @@ window.onload = function() {
  
     var messages = [];
     var socket = io.connect('http://localhost:8080');
-    //var field = document.getElementById("field");
-    //var sendButton = document.getElementById("send");
-    var content = document.getElementById("content");
+    //var content = document.getElementById("content");
  
     socket.on('message', function (data) {
-        if(data.message) {
+        /*if(data.message) {
             messages.push(data.message);
             var html = '';
             for(var i=0; i<messages.length; i++) {
@@ -16,12 +14,8 @@ window.onload = function() {
             content.innerHTML = html;
         } else {
             console.log("There is a problem:", data);
-        }
+        }*/
+            console.log("data: ", data);
     });
- 
-    //sendButton.onclick = function() {
-    //    var text = field.value;
-    //    socket.emit('send', { message: text });
-    //};
  
 }
