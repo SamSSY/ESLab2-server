@@ -1,16 +1,18 @@
 var express = require('express');
 var http = require('http');
+var fs = require('fs');
 var app = express();
-var server = http.createServer(app);
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 var port = 8080;
 
-app.use(express.static(__dirname + '/src'));
+app.use('/static', express.static('public'));
 
 // GET method route
 app.get('/', function (req, res) {
-  //res.send('GET request to the homepage');
-  console.log("get!");
-  res.redirect('/view/index.html');
+  fs.readFile('view/index.html', function(err, buf) {
+    res.send(buf.toString());
+  });
 });
 
 // POST method route
@@ -19,12 +21,7 @@ app.post('/', function (req, res) {
 });
 
 
-var io = require('socket.io')
-			.listen(app.listen(port, function(){
-				console.log('HTTP on http://localhost:8080/');
-			}));
-
-io.sockets.on('connection', function (socket) {
+io.on('connection', function (socket) {
 	console.log("socket!");
     socket.emit('message', { message: 'welcome! ' });
     socket.on('send', function (data) {
@@ -32,10 +29,7 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-
-
-/*
-server.listen(8080, function(){
-    console.log('HTTP on http://localhost:8080/');
+server.listen(port, function() {
+  console.log('HTTP on http://localhost:' + port +'/');
 });
-*/
+
