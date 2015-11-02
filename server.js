@@ -51,9 +51,9 @@ io.sockets.on('connection', function (socket) {
 	});
 
     socket.on('pullAccelData', function (data) {
-    	//console.log('pullAccelData');
+    	console.log('pullAccelData');
         readData('accel-data.db',function(){
-        	 //console.log("push!");
+        	 console.log("push!");
         	 io.sockets.emit('pushAccelData', dataFromDb);
         });
     });
@@ -66,9 +66,9 @@ io.sockets.on('connection', function (socket) {
 function readData(file, callback){
 	fs.readFile(file, 'utf8', function (err, data) {
   		if (err) throw err;
-  		//console.log("readdata!");
+  		console.log("readdata!");
   		dataFromDb = data;
-  		//console.log("dataFromDb", dataFromDb);
+  		console.log("dataFromDb", dataFromDb);
   		callback();
 	});
 }
