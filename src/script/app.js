@@ -79,9 +79,9 @@ angular.module('tesselApp',[])
 			        },
 			        yAxis: {
 			            title: {
-			                text: '1.0'
+			                text: 'intensity'
 			            },
-			            min: 0
+			            min: -1
 			        },
 			        tooltip: {
 			            headerFormat: '<b>{series.name}</b><br>',
