@@ -10,13 +10,17 @@
 	<script src="../view/socket.io.js"></script>
 	 <!-- Angular Material CSS now available via Google CDN; version 0.10 used here -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.css">
+    <!-- highcharts CDN -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
 
 </head>
 
 <body ng-app="tesselApp" ng-controller="appCtrl">
 	<div id="content"></div>
-	<span>socket.io test</span>
+	<span>real time accelerometer data: </span>
 	<div>{{data}}</div>
+	<accelerometer-datachart></accelerometer-datachart>
 
 </body>
     <!-- Angular Material Dependencies -->

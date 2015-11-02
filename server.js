@@ -12,6 +12,13 @@ var io = require('socket.io')
 				console.log('HTTP on http://localhost:8080/');
 			}));
 
+var x = 0;
+var y = 0;
+var z = 0;
+var dataFromDb = null; 
+
+
+
 app.use(express.static(__dirname + '/src'));
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -29,11 +36,6 @@ app.get('/', function (req, res) {
   });
 });
 
-var x = 0;
-var y = 0;
-var z = 0;
-
-
 io.sockets.on('connection', function (socket) {
 	console.log("socket!");
 
@@ -43,11 +45,48 @@ io.sockets.on('connection', function (socket) {
 		x = req.body.x;
 		y = req.body.y;
 		z = req.body.z;
-		io.sockets.emit('message', { x: x, y:y, z:z });
+		io.sockets.emit('postData', { "x": x, "y":y, "z":z });
+		saveData('accel-data.db', { "x": x, "y":y, "z":z });
 		res.send("get post!");
 	});
 
-    socket.on('send', function (data) {
-        io.sockets.emit('message', data);
+    socket.on('pullAccelData', function (data) {
+    	//console.log('pullAccelData');
+        readData('accel-data.db',function(){
+        	 //console.log("push!");
+        	 io.sockets.emit('pushAccelData', dataFromDb);
+        });
     });
 });
+
+
+
+//
+
+function readData(file, callback){
+	fs.readFile(file, 'utf8', function (err, data) {
+  		if (err) throw err;
+  		//console.log("readdata!");
+  		dataFromDb = data;
+  		//console.log("dataFromDb", dataFromDb);
+  		callback();
+	});
+}
+
+function saveData(file, data){
+	console.log(data);
+	fs.appendFile(file, JSON.stringify(data)+ '\n', function(err){
+		// body
+		if (err) throw err;
+    	console.log('append success!');
+	})
+}
+
+
+
+
+
+
+
+
+
