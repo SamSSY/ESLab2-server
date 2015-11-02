@@ -41,16 +41,21 @@ angular.module('tesselApp',[])
     	 		console.log(data.split("\n"));
     	 		scope.dataArray = data.split("\n");
     	 		//delete scope.dataArray[scope.dataArray.length];
-    	 		scope.dataArray.splice(scope.dataArray.length - 1, 1);
+    	 		//scope.dataArray.splice(scope.dataArray.length - 1, 1);
     	 		console.log(scope.dataArray);
     	 		for(var i = 0; i < scope.dataArray.length; ++i){
-    	 			scope.dataArray[i] = JSON.parse(scope.dataArray[i]);
-    	 			scope.xArray.push(parseFloat(scope.dataArray[i].x));
-					scope.yArray.push(parseFloat(scope.dataArray[i].y));
-					scope.zArray.push(parseFloat(scope.dataArray[i].z));
-    	 			
-    	 			console.log(scope.dataArray[i]);
-    	 			//console.log(scope.xArray);
+    	 			if(scope.dataArray[i] == ""){
+    	 				scope.dataArray.splice(i, 1);
+    	 			}
+    	 			else{
+    	 				scope.dataArray[i] = JSON.parse(scope.dataArray[i]);
+	    	 			scope.xArray.push(parseFloat(scope.dataArray[i].x));
+						scope.yArray.push(parseFloat(scope.dataArray[i].y));
+						scope.zArray.push(parseFloat(scope.dataArray[i].z));
+	    	 			
+	    	 			console.log(scope.dataArray[i]);
+	    	 			//console.log(scope.xArray);
+    	 			}
     	 		}
     	 		console.log(scope.xArray);
     	 		console.log(scope.yArray);
