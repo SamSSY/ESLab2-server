@@ -75,7 +75,7 @@ function readData(file, callback){
 
 function saveData(file, data){
 	console.log(data);
-	fs.appendFile(file, JSON.stringify(data)+ '\n', function(err){
+	fs.appendFile(file,'\n' + JSON.stringify(data), function(err){
 		// body
 		if (err) throw err;
     	console.log('append success!');
