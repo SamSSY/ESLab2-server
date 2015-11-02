@@ -12,8 +12,6 @@ var io = require('socket.io')
 				console.log('HTTP on http://localhost:8080/');
 			}));
 
-//server.listen(8080);
-
 app.use(express.static(__dirname + '/src'));
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -41,12 +39,12 @@ io.sockets.on('connection', function (socket) {
 
 	// POST method route
 	app.post('/', function (req, res) {
-		console.log("!!!");
+		console.log("post!");
 		x = req.body.x;
 		y = req.body.y;
 		z = req.body.z;
 
-		io.sockets.emit('message', { x: x, y:y, z:z });
+		io.sockets .emit('message', { x: x, y:y, z:z });
 	});
 
     socket.on('send', function (data) {
