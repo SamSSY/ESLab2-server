@@ -6,11 +6,13 @@ var app = express();
 var server = http.createServer(app);
 var port = 8080;
 
+//var io = require('socket.io')(server);
 var io = require('socket.io')
 			.listen(app.listen(port, function(){
 				console.log('HTTP on http://localhost:8080/');
 			}));
 
+//server.listen(8080);
 
 app.use(express.static(__dirname + '/src'));
 
@@ -39,12 +41,12 @@ io.sockets.on('connection', function (socket) {
 
 	// POST method route
 	app.post('/', function (req, res) {
-		
 		console.log("!!!");
 		x = req.body.x;
 		y = req.body.y;
 		z = req.body.z;
-		socket.emit('message', { x: x, y:y, z:z });
+
+		io.sockets.emit('message', { x: x, y:y, z:z });
 	});
 
     socket.on('send', function (data) {
