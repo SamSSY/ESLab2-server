@@ -3,7 +3,7 @@ angular.module('tesselApp',[])
 	//window.onload = function() {
  	$scope.data = 0 ;
     var messages = [];
-    var socket = io.connect('http://localhost:8080');
+    var socket = io();
 
     socket.on('message', function (data) {
         	$scope.$apply(function () {

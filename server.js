@@ -43,8 +43,8 @@ io.sockets.on('connection', function (socket) {
 		x = req.body.x;
 		y = req.body.y;
 		z = req.body.z;
-
-		io.sockets .emit('message', { x: x, y:y, z:z });
+		io.sockets.emit('message', { x: x, y:y, z:z });
+		res.send("get post!");
 	});
 
     socket.on('send', function (data) {
