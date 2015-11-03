@@ -238,7 +238,7 @@ angular.module('tesselApp',[])
 				            type: 'spline',
 				            data: scope.tempArray,
 				            tooltip: {
-				                valueSuffix: ' °C'
+				                valueSuffix: ' °F'
 				            }
 				        }]
 				    });
