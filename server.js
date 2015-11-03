@@ -15,6 +15,8 @@ var io = require('socket.io')
 var x = 0;
 var y = 0;
 var z = 0;
+var degrees = 0;
+var humidity = 0;
 var dataFromDb = null; 
 
 
@@ -42,12 +44,23 @@ io.sockets.on('connection', function (socket) {
 	// POST method route
 	app.post('/', function (req, res) {
 		console.log("post!");
-		x = req.body.x;
-		y = req.body.y;
-		z = req.body.z;
-		io.sockets.emit('postData', { "x": x, "y":y, "z":z });
-		saveData('accel-data.db', { "x": x, "y":y, "z":z });
-		res.send("get post!");
+
+		if( req.body.x !== undefined ){
+			x = req.body.x;
+			y = req.body.y;
+			z = req.body.z;
+			io.sockets.emit('postData', { "x": x, "y":y, "z":z });
+			saveData('accel-data.db', { "x": x, "y":y, "z":z });
+			res.send("get post!");
+		}
+		else if( req.body.degrees !== undefined){
+			degrees = req.body.degrees;
+			humidity = req.body.humidity;
+			//console.log(degrees);
+			io.sockets.emit('postClimateData', {"degrees": degrees, "humidity": humidity});
+			saveData('climate-data.db', {"degrees": degrees, "humidity": humidity});
+			res.send("get post!");
+		}
 	});
 
     socket.on('pullAccelData', function (data) {
@@ -57,6 +70,16 @@ io.sockets.on('connection', function (socket) {
         	 io.sockets.emit('pushAccelData', dataFromDb);
         });
     });
+
+    socket.on('pullClimateData', function (data) {
+    	console.log('pullClimateData');
+        readData('climate-data.db',function(){
+        	 console.log("push!");
+        	 io.sockets.emit('pushClimateData', dataFromDb);
+        });
+    });
+
+
 });
 
 

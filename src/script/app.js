@@ -20,7 +20,7 @@ angular.module('tesselApp',[])
 		 //have access to the scope outside of the directive rather than inside.
 		 //transclude: true,
     	 scope: {},
-    	 template: '<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>',
+    	 template: '<div id="accel-data-container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>',
     	 link: function(scope){
 
     	 	var socket = io();
@@ -66,7 +66,7 @@ angular.module('tesselApp',[])
     	 	
 
     	 	function showAccelDataHighchart() {
-			    $('#container').highcharts({
+			    $('#accel-data-container').highcharts({
 			        chart: {
 			            type: 'spline'
 			        },
@@ -116,4 +116,136 @@ angular.module('tesselApp',[])
 			
     	 }
 	};
+})
+.directive('climateDatachart',function(){
+	return{
+		 restrict: 'E',
+		 //transclude makes the contents of a directive with this option 
+		 //have access to the scope outside of the directive rather than inside.
+		 //transclude: true,
+    	 scope: {},
+    	 template: '<div id="climate-data-container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>',
+    	 link: function(scope){
+
+    	 	var socket = io();
+    	 	scope.dataArray = [];
+    	 	scope.tempArray = [];
+    	 	scope.humidityArray = [];
+
+    	 	(function(){ 
+    	 		socket.emit('pullClimateData',{data : null});
+    	 		console.log('pullClimateData');
+    	 	})();
+
+    	 	socket.on('pushClimateData',function(data){
+    	 		console.log('pushClimateData');
+    	 		console.log(typeof(data));
+    	 		console.log(data);
+    	 		console.log(data.split("\n"));
+    	 		scope.dataArray = data.split("\n");
+    	 		//delete scope.dataArray[scope.dataArray.length];
+    	 		//scope.dataArray.splice(scope.dataArray.length - 1, 1);
+    	 		console.log(scope.dataArray);
+    	 		for(var i = 0; i < scope.dataArray.length; ++i){
+    	 			if(scope.dataArray[i] == ""){
+    	 				scope.dataArray.splice(i, 1);
+    	 			}
+    	 			else{
+    	 				scope.dataArray[i] = JSON.parse(scope.dataArray[i]);
+	    	 			scope.tempArray.push(parseFloat(scope.dataArray[i].degrees));
+						scope.humidityArray.push(parseFloat(scope.dataArray[i].humidity));
+	    	 			
+	    	 			console.log(scope.dataArray[i]);
+	    	 			//console.log(scope.xArray);
+    	 			}
+    	 		}
+       	 		showClimateDataHighchart();
+    	 	});
+
+    	 	
+
+    	 	function showClimateDataHighchart() {
+			    $('#climate-data-container').highcharts({
+				 		chart: {
+				            zoomType: 'xy'
+				        },
+				        title: {
+				            text: 'climate data'
+				        },
+				        subtitle: {
+				            text: '@NTUEE BL building '
+				        },
+				        xAxis:{
+				        	 type: 'linear',
+							 title: {
+							    text: 'time'
+							 }
+				        },
+				        yAxis: [{ // Primary yAxis
+				            labels: {
+				                format: '{value}°F',
+				                style: {
+				                    color: Highcharts.getOptions().colors[2]
+				                }
+				            },
+				            title: {
+				                text: 'Temperature',
+				                style: {
+				                    color: Highcharts.getOptions().colors[2]
+				                }
+				            },
+				            opposite: true
+
+				        }, { // Secondary yAxis
+				            gridLineWidth: 0,
+				            title: {
+				                text: 'Humidity',
+				                style: {
+				                    color: Highcharts.getOptions().colors[0]
+				                }
+				            },
+				            labels: {
+				                format: '{value} %RH',
+				                style: {
+				                    color: Highcharts.getOptions().colors[0]
+				                }
+				            }
+
+				        }],
+				        tooltip: {
+				            shared: true
+				        },
+				        legend: {
+				            layout: 'vertical',
+				            align: 'left',
+				            x: 80,
+				            verticalAlign: 'top',
+				            y: 55,
+				            floating: true,
+				            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+				        },
+				        series: [{
+				            name: 'Humidity',
+				            type: 'column',
+				            yAxis: 1,
+				            data: scope.humidityArray,
+				            tooltip: {
+				                valueSuffix: ' %RH'
+				            }
+
+				        }, {
+				            name: 'Temperature',
+				            type: 'spline',
+				            data: scope.tempArray,
+				            tooltip: {
+				                valueSuffix: ' °C'
+				            }
+				        }]
+				    });
+			    };
+			    ///
+			}
+			
+    	 };
+//	};
 });
