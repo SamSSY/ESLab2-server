@@ -17,6 +17,8 @@ var y = 0;
 var z = 0;
 var degrees = 0;
 var humidity = 0;
+var lightLevel = 0;
+var soundLevel = 0;
 var dataFromDb = null; 
 
 
@@ -56,9 +58,15 @@ io.sockets.on('connection', function (socket) {
 		else if( req.body.degrees !== undefined){
 			degrees = req.body.degrees;
 			humidity = req.body.humidity;
-			//console.log(degrees);
 			io.sockets.emit('postClimateData', {"degrees": degrees, "humidity": humidity});
 			saveData('climate-data.db', {"degrees": degrees, "humidity": humidity});
+			res.send("get post!");
+		}
+		else if ( req.body.lightLevel !== undefined){
+			lightLevel = req.body.lightLevel;
+			soundLevel = req.body.soundLevel;
+			io.sockets.emit('postAmbientData', {"lightLevel": lightLevel, "soundLevel": soundLevel});
+			saveData('ambient-data.db', {"lightLevel": lightLevel, "soundLevel": soundLevel});
 			res.send("get post!");
 		}
 	});
@@ -79,7 +87,13 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
-
+    socket.on('pullAmbientData', function (data) {
+    	console.log('pullAmbientData');
+        readData('ambient-data.db',function(){
+        	 console.log("push!");
+        	 io.sockets.emit('pushAmbientData', dataFromDb);
+        });
+    });
 });
 
 

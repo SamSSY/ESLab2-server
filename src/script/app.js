@@ -189,10 +189,7 @@ angular.module('tesselApp',[])
 				                }
 				            },
 				            title: {
-				                text: 'Temperature',
-				                style: {
-				                    color: Highcharts.getOptions().colors[2]
-				                }
+				                text: 'Temperature'
 				            },
 				            opposite: true
 
@@ -243,9 +240,132 @@ angular.module('tesselApp',[])
 				        }]
 				    });
 			    };
-			    ///
-			}
-			
-    	 };
-//	};
+			}			
+    	};
+})
+.directive('ambientDatachart',function(){
+	return{
+		 restrict: 'E',
+		 //transclude makes the contents of a directive with this option 
+		 //have access to the scope outside of the directive rather than inside.
+		 //transclude: true,
+    	 scope: {},
+    	 template: '<div id="ambient-data-container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>',
+    	 link: function(scope){
+
+    	 	var socket = io();
+    	 	scope.dataArray = [];
+    	 	scope.lightArray = [];
+    	 	scope.soundArray = [];
+
+    	 	(function(){ 
+    	 		socket.emit('pullAmbientData',{data : null});
+    	 		console.log('pullAmbientData');
+    	 	})();
+
+    	 	socket.on('pushAmbientData',function(data){
+    	 		console.log('pushAmbientData');
+    	 		console.log(typeof(data));
+    	 		console.log(data);
+    	 		console.log(data.split("\n"));
+    	 		scope.dataArray = data.split("\n");
+    	 		//delete scope.dataArray[scope.dataArray.length];
+    	 		//scope.dataArray.splice(scope.dataArray.length - 1, 1);
+    	 		console.log(scope.dataArray);
+    	 		for(var i = 0; i < scope.dataArray.length; ++i){
+    	 			if(scope.dataArray[i] == ""){
+    	 				scope.dataArray.splice(i, 1);
+    	 			}
+    	 			else{
+    	 				scope.dataArray[i] = JSON.parse(scope.dataArray[i]);
+	    	 			scope.lightArray.push(parseFloat(scope.dataArray[i].lightLevel));
+						scope.soundArray.push(parseFloat(scope.dataArray[i].soundLevel));
+	    	 			
+	    	 			console.log(scope.dataArray[i]);
+    	 			}
+    	 		}
+       	 		showAmbientDataHighchart();
+    	 	});
+
+    	 	
+
+    	 	function showAmbientDataHighchart() {
+			    $('#ambient-data-container').highcharts({
+				 		chart: {
+				            zoomType: 'xy'
+				        },
+				        title: {
+				            text: 'ambient data'
+				        },
+				        subtitle: {
+				            text: 'with cell phone light app/ hand claps '
+				        },
+				        xAxis:{
+				        	 type: 'linear',
+							 title: {
+							    text: 'time'
+							 }
+				        },
+				        yAxis: [{ // Primary yAxis
+				            labels: {
+				                format: '{value}',
+				                style: {
+				                 //   color: Highcharts.getOptions().colors[2]
+				                }
+				            },
+				            title: {
+				                text: 'Light level'
+				            },
+				            opposite: true
+
+				        }, { // Secondary yAxis
+				            gridLineWidth: 0,
+				            title: {
+				                text: 'Sound level',
+				                style: {
+				                  //  color: Highcharts.getOptions().colors[0]
+				                }
+				            },
+				            labels: {
+				                format: '{value}',
+				                style: {
+				                   // color: Highcharts.getOptions().colors[0]
+				                }
+				            }
+
+				        }],
+				        tooltip: {
+				        	crosshairs: true, 
+				            shared: true
+				        },
+				        legend: {
+				            layout: 'vertical',
+				            align: 'left',
+				            x: 80,
+				            verticalAlign: 'top',
+				            y: 55,
+				            floating: true,
+				            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+				        },
+				        series: [{
+				            name: 'light level',
+				            //type: 'spline',
+				            yAxis: 1,
+				            data: scope.lightArray,
+				            //tooltip: {
+				            //    valueSuffix: ' %RH'
+				            //}
+
+				        }, {
+				            name: 'sound level',
+				            //type: 'spline',
+				            data: scope.soundArray,
+				            //tooltip: {
+				            //    valueSuffix: ' °F'
+				            //}
+				        }]
+				    });
+			    };
+			}			
+    	};
 });
