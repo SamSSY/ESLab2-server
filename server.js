@@ -20,10 +20,12 @@ var humidity = 0;
 var lightLevel = 0;
 var soundLevel = 0;
 var dataFromDb = null; 
-
+var coordinates = {};
+var altitude = {};
 
 
 app.use(express.static(__dirname + '/src'));
+//app.use(express.logger('dev'));
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -69,6 +71,14 @@ io.sockets.on('connection', function (socket) {
 			saveData('ambient-data.db', {"lightLevel": lightLevel, "soundLevel": soundLevel});
 			res.send("get post!");
 		}
+		else if ( req.body.coordinates !== undefined){
+			coordinates = req.body.coordinates;
+			altitude = req.body.altitude;
+			io.sockets.emit('postGpsData', {"coordinates": coordinates, "altitude": altitude});
+			saveData('gps-data.db', {"coordinates": coordinates, "altitude": altitude});
+			res.send("get post!");
+		}
+
 	});
 
     socket.on('pullAccelData', function (data) {
@@ -94,7 +104,17 @@ io.sockets.on('connection', function (socket) {
         	 io.sockets.emit('pushAmbientData', dataFromDb);
         });
     });
-});
+
+    socket.on('pullGpsData', function (data) {
+    	console.log('pullGpsData');
+        readData('gps-data.db',function(){
+        	 console.log("push!");
+        	 io.sockets.emit('pushGpsData', dataFromDb);
+        });
+    });
+
+
+});	
 
 
 
