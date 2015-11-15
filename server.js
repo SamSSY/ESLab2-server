@@ -48,6 +48,7 @@ io.sockets.on('connection', function (socket) {
 	// POST method route
 	app.post('/', function (req, res) {
 		console.log("post!");
+		console.log(req.body);
 
 		if( req.body.x !== undefined ){
 			x = req.body.x;
@@ -71,11 +72,12 @@ io.sockets.on('connection', function (socket) {
 			saveData('ambient-data.db', {"lightLevel": lightLevel, "soundLevel": soundLevel});
 			res.send("get post!");
 		}
-		else if ( req.body.coordinates !== undefined){
+		else if ( req.body[1].timestamp !== undefined){
 			coordinates = req.body.coordinates;
-			altitude = req.body.altitude;
-			io.sockets.emit('postGpsData', {"coordinates": coordinates, "altitude": altitude});
-			saveData('gps-data.db', {"coordinates": coordinates, "altitude": altitude});
+			//altitude = req.body.altitude;
+
+			io.sockets.emit('postGpsData', req.body);
+			saveData('gps-data.db', req.body);
 			res.send("get post!");
 		}
 
