@@ -6,7 +6,6 @@ var app = express();
 var server = http.createServer(app);
 var port = 8080;
 
-//var io = require('socket.io')(server);
 var io = require('socket.io')
 			.listen(app.listen(port, function(){
 				console.log('HTTP on http://localhost:8080/');
@@ -25,7 +24,6 @@ var altitude = {};
 
 
 app.use(express.static(__dirname + '/src'));
-//app.use(express.logger('dev'));
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -73,9 +71,6 @@ io.sockets.on('connection', function (socket) {
 			res.send("get post!");
 		}
 		else if ( req.body[1].timestamp !== undefined){
-			coordinates = req.body.coordinates;
-			//altitude = req.body.altitude;
-
 			io.sockets.emit('postGpsData', req.body);
 			saveData('gps-data.db', req.body);
 			res.send("get post!");

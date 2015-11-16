@@ -35,14 +35,7 @@ angular.module('tesselApp',[])
     	 	})();
 
     	 	socket.on('pushAccelData',function(data){
-    	 		console.log('pushAccelData');
-    	 		console.log(typeof(data));
-    	 		console.log(data);
-    	 		console.log(data.split("\n"));
     	 		scope.dataArray = data.split("\n");
-    	 		//delete scope.dataArray[scope.dataArray.length];
-    	 		//scope.dataArray.splice(scope.dataArray.length - 1, 1);
-    	 		console.log(scope.dataArray);
     	 		for(var i = 0; i < scope.dataArray.length; ++i){
     	 			if(scope.dataArray[i] == ""){
     	 				scope.dataArray.splice(i, 1);
@@ -52,14 +45,8 @@ angular.module('tesselApp',[])
 	    	 			scope.xArray.push(parseFloat(scope.dataArray[i].x));
 						scope.yArray.push(parseFloat(scope.dataArray[i].y));
 						scope.zArray.push(parseFloat(scope.dataArray[i].z));
-	    	 			
-	    	 			console.log(scope.dataArray[i]);
-	    	 			//console.log(scope.xArray);
     	 			}
     	 		}
-    	 		console.log(scope.xArray);
-    	 		console.log(scope.yArray);
-    	 		console.log(scope.zArray);
     	 		showAccelDataHighchart();
     	 	});
 
@@ -138,14 +125,7 @@ angular.module('tesselApp',[])
     	 	})();
 
     	 	socket.on('pushClimateData',function(data){
-    	 		console.log('pushClimateData');
-    	 		console.log(typeof(data));
-    	 		console.log(data);
-    	 		console.log(data.split("\n"));
     	 		scope.dataArray = data.split("\n");
-    	 		//delete scope.dataArray[scope.dataArray.length];
-    	 		//scope.dataArray.splice(scope.dataArray.length - 1, 1);
-    	 		console.log(scope.dataArray);
     	 		for(var i = 0; i < scope.dataArray.length; ++i){
     	 			if(scope.dataArray[i] == ""){
     	 				scope.dataArray.splice(i, 1);
@@ -154,9 +134,6 @@ angular.module('tesselApp',[])
     	 				scope.dataArray[i] = JSON.parse(scope.dataArray[i]);
 	    	 			scope.tempArray.push(parseFloat(scope.dataArray[i].degrees));
 						scope.humidityArray.push(parseFloat(scope.dataArray[i].humidity));
-	    	 			
-	    	 			console.log(scope.dataArray[i]);
-	    	 			//console.log(scope.xArray);
     	 			}
     	 		}
        	 		showClimateDataHighchart();
@@ -264,14 +241,7 @@ angular.module('tesselApp',[])
     	 	})();
 
     	 	socket.on('pushAmbientData',function(data){
-    	 		console.log('pushAmbientData');
-    	 		console.log(typeof(data));
-    	 		console.log(data);
-    	 		console.log(data.split("\n"));
     	 		scope.dataArray = data.split("\n");
-    	 		//delete scope.dataArray[scope.dataArray.length];
-    	 		//scope.dataArray.splice(scope.dataArray.length - 1, 1);
-    	 		console.log(scope.dataArray);
     	 		for(var i = 0; i < scope.dataArray.length; ++i){
     	 			if(scope.dataArray[i] == ""){
     	 				scope.dataArray.splice(i, 1);
@@ -279,9 +249,7 @@ angular.module('tesselApp',[])
     	 			else{
     	 				scope.dataArray[i] = JSON.parse(scope.dataArray[i]);
 	    	 			scope.lightArray.push(parseFloat(scope.dataArray[i].lightLevel));
-						scope.soundArray.push(parseFloat(scope.dataArray[i].soundLevel));
-	    	 			
-	    	 			console.log(scope.dataArray[i]);
+						scope.soundArray.push(parseFloat(scope.dataArray[i].soundLevel));	    	 			
     	 			}
     	 		}
        	 		showAmbientDataHighchart();
@@ -310,7 +278,6 @@ angular.module('tesselApp',[])
 				            labels: {
 				                format: '{value}',
 				                style: {
-				                 //   color: Highcharts.getOptions().colors[2]
 				                }
 				            },
 				            title: {
@@ -323,13 +290,11 @@ angular.module('tesselApp',[])
 				            title: {
 				                text: 'Sound level',
 				                style: {
-				                  //  color: Highcharts.getOptions().colors[0]
 				                }
 				            },
 				            labels: {
 				                format: '{value}',
 				                style: {
-				                   // color: Highcharts.getOptions().colors[0]
 				                }
 				            }
 
@@ -349,20 +314,11 @@ angular.module('tesselApp',[])
 				        },
 				        series: [{
 				            name: 'light level',
-				            //type: 'spline',
 				            yAxis: 1,
-				            data: scope.lightArray,
-				            //tooltip: {
-				            //    valueSuffix: ' %RH'
-				            //}
-
+				            data: scope.lightArray
 				        }, {
 				            name: 'sound level',
-				            //type: 'spline',
-				            data: scope.soundArray,
-				            //tooltip: {
-				            //    valueSuffix: ' °F'
-				            //}
+				            data: scope.soundArray
 				        }]
 				    });
 			    };
@@ -382,6 +338,8 @@ angular.module('tesselApp',[])
     	 	var socket = io();
     	 	scope.coordinatesArray = [];
     	 	scope.altitudeArray = [];
+    	 	scope.dataRows = [];
+    	 	scope.dataArray = [];
 
     	 	(function(){ 
     	 		socket.emit('pullGpsData',{data : null});
@@ -389,24 +347,34 @@ angular.module('tesselApp',[])
     	 	})();
 
     	 	socket.on('pushGpsData',function(data){
-    	 		console.log('pushGpsData');
-    	 		console.log(typeof(data));
-    	 		console.log(data);
-    	 		console.log(data.split("\n"));
-    	 		scope.dataArray = data.split("\n");
-    	 		//delete scope.dataArray[scope.dataArray.length];
-    	 		//scope.dataArray.splice(scope.dataArray.length - 1, 1);
-    	 		console.log(scope.dataArray);
-    	 		for(var i = 0; i < scope.dataArray.length; ++i){
-    	 			if(scope.dataArray[i] == ""){
-    	 				scope.dataArray.splice(i, 1);
-    	 			}
-    	 			else{
-    	 				scope.dataArray[i] = JSON.parse(scope.dataArray[i]);
-	    	 			scope.coordinatesArray.push(scope.dataArray[i].coordinates);
-   	    	 			scope.altitudeArray.push(scope.dataArray[i].altitude);
-						//scope.soundArray.push(parseFloat(scope.dataArray[i].soundLevel));	 			
-	    	 			console.log(scope.dataArray[i]);
+    	 		scope.dataRows = data.split("\n");
+
+    	 		var temp_1 = null;
+    	 		var temp_2 = null;
+
+    	 		for (var i = 0 ; i < scope.dataRows.length; ++i){
+    	 			scope.dataRows[i] = scope.dataRows[i].substring(1 , scope.dataRows[i].length - 1);
+    	 			scope.dataRows[i] = scope.dataRows[i].split("},{").join("}\n{");
+					scope.dataRows[i] = scope.dataRows[i].split("\n");
+    	 			for (var j = 0 ; j < scope.dataRows[i].length; ++j){
+    	 				temp_1 = JSON.parse(scope.dataRows[i][j]);
+						if( j+1 < scope.dataRows[i].length){
+							temp_2 = JSON.parse(scope.dataRows[i][j+1]);
+							if (temp_1.timestamp == temp_2.timestamp){
+								var temp = [];
+								if (temp_1.lat){
+									temp.push(temp_1.lat);
+									temp.push(temp_1.lon);
+									temp.push(temp_2.alt);
+								}
+								else if(temp_1.alt){
+									temp.push(temp_2.lat);
+									temp.push(temp_2.lon);
+									temp.push(temp_1.alt);
+								}
+								scope.dataArray.push(temp);
+							}
+						}
     	 			}
     	 		}
        	 		showGpsDataHighchart();
@@ -464,27 +432,36 @@ angular.module('tesselApp',[])
 				            }
 				        },
 				        yAxis: {
-				            min: 0,
-				            max: 10,
+				        	title: {
+				                text: 'Longitude'
+				            },
+				            min:121.538,
+				            max: 121.545,
 				            title: null
 				        },
 				        xAxis: {
-				            min: 0,
-				            max: 10,
+				        	title: {
+				                text: 'Latitude'
+				            },
+				            min: 25.017,
+				            max: 25.0183,
 				            gridLineWidth: 1
 				        },
 				        zAxis: {
-				            min: 0,
-				            max: 10,
+				        	title: {
+				                text: 'Altitude'
+				            },
+				            min: -5,
+				            max: 30,
 				            showFirstLabel: false
 				        },
 				        legend: {
 				            enabled: false
 				        },
 				        series: [{
-				            name: 'Reading',
+				            name: 'Latitude/ Longitude/ Altitude',
 				            colorByPoint: true,
-				            data: [[1, 6, 5], [8, 7, 9], [1, 3, 4], [4, 6, 8], [5, 7, 7], [6, 9, 6], [7, 0, 5], [2, 3, 3], [3, 9, 8], [3, 6, 5], [4, 9, 4], [2, 3, 3], [6, 9, 9], [0, 7, 0], [7, 7, 9], [7, 2, 9], [0, 6, 2], [4, 6, 7], [3, 7, 7], [0, 1, 7], [2, 8, 6], [2, 3, 7], [6, 4, 8], [3, 5, 9], [7, 9, 5], [3, 1, 7], [4, 4, 2], [3, 6, 2], [3, 1, 6], [6, 8, 5], [6, 6, 7], [4, 1, 1], [7, 2, 7], [7, 7, 0], [8, 8, 9], [9, 4, 1], [8, 3, 4], [9, 8, 9], [3, 5, 3], [0, 2, 4], [6, 0, 2], [2, 1, 3], [5, 8, 9], [2, 1, 1], [9, 7, 6], [3, 0, 2], [9, 9, 0], [3, 4, 8], [2, 6, 1], [8, 9, 2], [7, 6, 5], [6, 3, 1], [9, 3, 1], [8, 9, 3], [9, 1, 0], [3, 8, 7], [8, 0, 0], [4, 9, 7], [8, 6, 2], [4, 3, 0], [2, 3, 5], [9, 1, 4], [1, 1, 4], [6, 0, 2], [6, 1, 6], [3, 8, 8], [8, 8, 7], [5, 5, 0], [3, 9, 6], [5, 4, 3], [6, 8, 3], [0, 1, 5], [6, 7, 3], [8, 3, 2], [3, 8, 3], [2, 1, 6], [4, 6, 7], [8, 9, 9], [5, 4, 2], [6, 1, 3], [6, 9, 5], [4, 8, 2], [9, 7, 4], [5, 4, 2], [9, 6, 1], [2, 7, 3], [4, 5, 4], [6, 8, 1], [3, 4, 0], [2, 2, 6], [5, 1, 2], [9, 9, 7], [6, 9, 9], [8, 4, 3], [4, 1, 7], [6, 2, 5], [0, 4, 9], [3, 5, 9], [6, 9, 1], [1, 9, 2]]
+				            data : scope.dataArray
 				        }]
 				    });
 
